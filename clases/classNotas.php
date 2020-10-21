@@ -1,20 +1,18 @@
 <?php
-include_once("../conexion.php");
+include_once("../conexion/conexion.php");
 class Nota{
     private $idNota;
-    private $idCurso;
-    private $idMateria;
-    private $idProfesor;
+    private $idEstudiante;
+    private $idTipoNotas;
     private $notaValor;
     private $notaPorcentaje;
     private $notaPeriodo;
     private $notaComentario;
 
-    public function __construct($idNota,$idCurso,$idMateria,$idProfesor,$notaValor,$notaPorcentaje,$notaPeriodo,$notaComentario){
+    public function __construct($idNota,$idEstudiante,$idTipoNotas,$notaValor,$notaPorcentaje,$notaPeriodo,$notaComentario){
         $this->idNota = $idNota;
-        $this->idCurso = $idCurso;
-        $this->idMateria = $idMateria;
-        $this->idProfesor = $idProfesor;
+        $this->idEstudiante = $idEstudiante;
+        $this->idTipoNotas = $idTipoNotas;
         $this->notaValor = $notaValor;
         $this->notaPorcentaje = $notaPorcentaje;
         $this->notaPeriodo = $notaPeriodo;
@@ -26,16 +24,12 @@ class Nota{
         return $this;
     }
     
-    public function setidCurso($idCurso){
-        $this->idCurso = $idCurso;
+    public function setidEstudiante($idEstudiante){
+        $this->idEstudiante = $idEstudiante;
         return $this;
     }
-    public function setidMateria($idMateria){
-        $this->idMateria = $idMateria;
-        return $this;
-    }
-    public function setidProfesor($idProfesor){
-        $this->idProfesor = $idProfesor;
+    public function setidTipoNotas($idTipoNotas){
+        $this->idTipoNotas = $idTipoNotas;
         return $this;
     }
     public function setNotaValor($notaValor){
@@ -58,14 +52,11 @@ class Nota{
     public function getidNota(){
         return $this->idNota;
     }
-    public function getidCurso(){
-        return $this->idCurso;
+    public function getidEstudiante(){
+        return $this->idEstudiante;
     }
-    public function getidMateria(){
-        return $this->idMateria;
-    }
-    public function getidProfesor(){
-        return $this->idProfesor;
+    public function getidTipoNotas(){
+        return $this->idTipoNotas;
     }
     public function getNotaValor(){
         return $this->notaValor;
@@ -81,17 +72,17 @@ class Nota{
     }
 
     public function __toString(){
-       return $this->idNota." ".$this->idCurso." ".$this->idMateria." ".$this->idProfesor." ".$this->notaValor." ".$this->notaPorcentaje." ".$this->notaPeriodo." ".$this->notaComentario." "; 
+       return $this->idNota." ".$this->idEstudiante." ".$this->idTipoNotas." ".$this->notaValor." ".$this->notaPorcentaje." ".$this->notaPeriodo." ".$this->notaComentario." "; 
     }
     //--------- CRUD  -----------------//
     //----------Create ----------------//
     public function guardarNota(){
+
         try{
-            $ps=Conexion::conexionbd()->prepare("INSERT INTO tablaNotas (notasIdCursoEstudiante,notasIdMateria,notasIdProfesor,notasValor,notasPorcentaje,notasPeriodo,NotasComentarios) VALUES(?,?,?,?,?,?,?)");
-            //$ps->bindParam(1,$this->idCurso);
-            $ps->bindParam(1,$this->idCurso);
-            $ps->bindParam(2,$this->idMateria);
-            $ps->bindParam(3,$this->idProfesor);
+            $ps=Conexion::conexionbd()->prepare("INSERT INTO tablaNotas (notasId,notasIdEstudiante,notastipoNotasId,notasValor,notasPorcentaje,notasPeriodo,notasComentarios) VALUES(?,?,?,?,?,?,?)");
+            $ps->bindParam(1,$this->idNota);
+            $ps->bindParam(2,$this->idEstudiante);
+            $ps->bindParam(3,$this->idTipoNotas);
             $ps->bindParam(4,$this->notaValor);
             $ps->bindParam(5,$this->notaPorcentaje);
             $ps->bindParam(6,$this->notaPeriodo);
@@ -116,14 +107,13 @@ class Nota{
             $ps->execute();
            while ($fila = $ps->fetch(PDO::FETCH_ASSOC)) {
                 $idNota = $fila['notasId'];
-                $idCurso = $fila['notasIdCursoEstudiante'];
-                $idMateria = $fila['notasIdMateria'];
-                $idProfesor = $fila['notasIdProfesor'];
+                $idEstudiante = $fila['notasIdEstudiante'];
+                $idTipoNotas = $fila['notastipoNotasId'];
                 $notaValor = $fila['notasValor'];
                 $notaPorcentaje = $fila['notasPorcentaje'];
                 $notaPeriodo = $fila['notasPeriodo'];
-                $notaComentario = $fila['NotasComentarios']; 
-                $datos[]=array('notasId'=>$idNota, 'notasIdCursoEstudiante'=>$idCurso, 'notasIdMateria'=>$idMateria, 'notasIdProfesor'=>$idProfesor, 'notasValor'=>$notaValor, 'notasPorcentaje'=>$notaPorcentaje,'notasPeriodo'=>$notaPeriodo);//,'notaComentario'=>$notaComentario);
+                $notaComentario = $fila['notasComentarios']; 
+                $datos[]=array('notasId'=>$idNota, 'notasIdEstudiante'=>$idEstudiante, 'notastipoNotasId'=>$idTipoNotas, 'notasValor'=>$notaValor, 'notasPorcentaje'=>$notaPorcentaje,'notasPeriodo'=>$notaPeriodo,'notaComentario'=>$notaComentario);
             }
 		} catch (Exception $e) {
         echo "Error al consultar".$e;
@@ -149,7 +139,7 @@ class Nota{
     //---------- update all ---------------//  
     public function actualizarNota($idNota){
         try{
-            $ps=Conexion::conexionbd()->prepare("UPDATE tablaNotas SET notasValor=?, notasPorcentaje=?, notasPeriodo=?, NotasComentarios=? WHERE notasId=?");
+            $ps=Conexion::conexionbd()->prepare("UPDATE tablaNotas SET notasValor=?, notasPorcentaje=?, notasPeriodo=?, notasComentarios=? WHERE notasId=?");
             $ps->bindParam(1,$this->notaValor);
             $ps->bindParam(2,$this->notaPorcentaje);
             $ps->bindParam(3,$this->notaPeriodo);
@@ -175,7 +165,7 @@ class Nota{
     //---------- delete ----------------//
     public static function eliminarNota($idNota){
         try{
-            $ps=Conexion::conexionbd()->prepare("DELETE FROM  tablaNotas  WHERE notasId=?");
+            $ps=Conexion::conexionbd()->prepare("DELETE FROM tablaNotas WHERE notasId=?");
             $ps->bindParam(1,$idNota);
             if($ps->execute()){
                 $borrado["id"] = $idNota;

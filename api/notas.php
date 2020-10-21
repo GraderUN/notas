@@ -4,7 +4,7 @@ include_once("../clases/classNotas.php");
 switch($_SERVER['REQUEST_METHOD']){
     case 'POST':  //Guardar una nota
         $_POST = json_decode(file_get_contents('php://input'),true);
-        $nota = new Nota(NULL,$_POST["idCursoEstudiante"],$_POST["idMateria"],$_POST["idProfesor"],$_POST["notaValor"],$_POST["notaPorcentaje"],$_POST["notaPeriodo"],$_POST["notaComentario"]);
+        $nota = new Nota(NULL,$_POST["notaIdEstudiante"],$_POST["notaTipoNotasId"],$_POST["notaValor"],$_POST["notaPorcentaje"],$_POST["notaPeriodo"],$_POST["notaComentario"]);
         $resultado["id"] = $nota->guardarNota();
         echo json_encode($resultado);
     break; 
@@ -17,7 +17,7 @@ switch($_SERVER['REQUEST_METHOD']){
     break;
     case 'PUT':  //Actualizar nota
         $_PUT = json_decode(file_get_contents('php://input'),true);
-        $nota = new Nota(NULL,NULL,NULL,NULL,$_PUT["notaValor"],$_PUT["notaPorcentaje"],$_PUT["notaPeriodo"],$_PUT["notaComentario"]);
+        $nota = new Nota(NULL,NULL,NULL,$_PUT["notaValor"],$_PUT["notaPorcentaje"],$_PUT["notaPeriodo"],$_PUT["notaComentario"]);
         $resultado = $nota->actualizarNota($_GET['idNota']);
         echo json_encode($resultado);
     break;
