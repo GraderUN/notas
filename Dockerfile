@@ -5,4 +5,4 @@ RUN apt-get update -y && \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 COPY . /var/www/html/
 WORKDIR /var/www/html/
-CMD ["php", "-S", "0.0.0.0:4000", "-t","./notas/api/"]
+CMD ["php", "-S", "0.0.0.0:4040", "-t","./api/"]
