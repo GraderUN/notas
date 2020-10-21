@@ -1,2 +1,2 @@
 # notas
-API REST para la gestión de las notas.
+API REST para la gestión de las notas del microservicio.
